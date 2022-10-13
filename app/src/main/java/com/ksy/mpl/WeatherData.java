@@ -12,19 +12,14 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class WeatherData extends Thread {
-    public String getWeatherState() {
-        return weatherState;
-    }
-
-    public Double getWeatherTemp() {
-        return weatherTemp;
-    }
 
     private String nx = "55";
     private String ny = "127";
-    private String baseDate = "20221012";
+    private String baseDate = "";
     private String baseTime = "0630";
     private String type = "json";
     private String weatherState = "";
@@ -33,6 +28,11 @@ public class WeatherData extends Thread {
     private String numOfRows = "1000";
 
     public String[] lookUpWeather() throws IOException, JSONException {
+        long now = System.currentTimeMillis();
+        Date date = new Date(now);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+        baseDate = dateFormat.format(date);
+
         String apiUrl = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst";
         String serviceKey = "bblped1fj1rwoLuY06oOCNnw%2B%2FnW97U1cZXfubIkK1YpznRPiOsi7dHb%2F%2FarMS1Buk7nLZ917PG%2Bc8bFdz%2F%2F%2Fw%3D%3D";
         StringBuilder urlBuilder = new StringBuilder(apiUrl);
@@ -103,14 +103,9 @@ public class WeatherData extends Thread {
             String category = jsonObj_4.getString("category");
             String fcstTime = jsonObj_4.getString("fcstTime");
 
-            if (fcstTime.equals("0700")) {
+            if (fcstTime.equals("0800")) {
                 Log.d("category", category);
                 Log.d("fcstValue", fcstValue);
-                if(category.equals("PTY")){
-                    if (Integer.parseInt(fcstValue) > 0) {
-                        weatherState = "비";
-                    }
-                }
 
                 if(category.equals("T3H") || category.equals("T1H")){
                     weatherTemp = Double.valueOf(fcstValue);
@@ -127,10 +122,17 @@ public class WeatherData extends Thread {
                         weatherState = fcstValue;
                     }
                 }
+
+                if(category.equals("PTY")){
+                    if (Integer.parseInt(fcstValue) > 0) {
+                        weatherState = "비";
+                    }
+                }
             }
         }
         Log.d("weatherState", weatherState);
         Log.d("weatherTemp", weatherTemp.toString());
+
         return new String[] {weatherState, weatherTemp.toString()};
     }
 }
