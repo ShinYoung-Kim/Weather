@@ -32,7 +32,7 @@ public class WeatherData extends Thread {
         baseDate = dateFormat.format(date);
 
         String apiUrl = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst";
-        String serviceKey = "";
+        String serviceKey = "bblped1fj1rwoLuY06oOCNnw%2B%2FnW97U1cZXfubIkK1YpznRPiOsi7dHb%2F%2FarMS1Buk7nLZ917PG%2Bc8bFdz%2F%2F%2Fw%3D%3D";
         StringBuilder urlBuilder = new StringBuilder(apiUrl);
         urlBuilder.append("?" + URLEncoder.encode("ServiceKey","UTF-8") + "="+serviceKey);
         urlBuilder.append("&" + URLEncoder.encode("nx","UTF-8") + "=" + URLEncoder.encode(nx, "UTF-8")); //경도
