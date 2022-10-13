@@ -21,16 +21,19 @@ public class WeatherData extends Thread {
     public Double getWeatherTemp() {
         return weatherTemp;
     }
+
     private String nx = "55";
     private String ny = "127";
-    private String baseDate = "20221009";
-    private String baseTime = "0900";
+    private String baseDate = "20221012";
+    private String baseTime = "0630";
     private String type = "json";
     private String weatherState = "";
     private Double weatherTemp = 0.0;
+    private String pageNo = "1";
+    private String numOfRows = "1000";
 
-    public void lookUpWeather() throws IOException, JSONException {
-        String apiUrl = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0";
+    public String[] lookUpWeather() throws IOException, JSONException {
+        String apiUrl = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst";
         String serviceKey = "bblped1fj1rwoLuY06oOCNnw%2B%2FnW97U1cZXfubIkK1YpznRPiOsi7dHb%2F%2FarMS1Buk7nLZ917PG%2Bc8bFdz%2F%2F%2Fw%3D%3D";
         StringBuilder urlBuilder = new StringBuilder(apiUrl);
         urlBuilder.append("?" + URLEncoder.encode("ServiceKey","UTF-8") + "="+serviceKey);
@@ -38,12 +41,16 @@ public class WeatherData extends Thread {
         urlBuilder.append("&" + URLEncoder.encode("ny","UTF-8") + "=" + URLEncoder.encode(ny, "UTF-8")); //위도
         urlBuilder.append("&" + URLEncoder.encode("base_date","UTF-8") + "=" + URLEncoder.encode(baseDate, "UTF-8")); /* 조회하고싶은 날짜*/
         urlBuilder.append("&" + URLEncoder.encode("base_time","UTF-8") + "=" + URLEncoder.encode(baseTime, "UTF-8")); /* 조회하고싶은 시간 AM 02시부터 3시간 단위 */
-        urlBuilder.append("&" + URLEncoder.encode("dataType","UTF-8") + "=" + URLEncoder.encode(type, "UTF-8"));	/* 타입 */
+        urlBuilder.append("&" + URLEncoder.encode("dataType","UTF-8") + "=" + URLEncoder.encode(type, "UTF-8"));
+        urlBuilder.append("&" + URLEncoder.encode("numOfRows","UTF-8") + "=" + URLEncoder.encode(numOfRows, "UTF-8"));
+        urlBuilder.append("&" + URLEncoder.encode("pageNo","UTF-8") + "=" + URLEncoder.encode(pageNo, "UTF-8"));	/* 타입 *//* 타입 */
+        /* 타입 */
 
         /*
          * GET방식으로 전송해서 파라미터 받아오기
          */
         URL url = new URL(urlBuilder.toString());
+        Log.d("Url", url.toString());
 
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
@@ -74,14 +81,17 @@ public class WeatherData extends Thread {
         JSONObject jsonObj_1 = new JSONObject(result);
         String response = jsonObj_1.getString("response");
 
+        Log.d("response", response);
         // response 로 부터 body 찾기
         JSONObject jsonObj_2 = new JSONObject(response);
         String body = jsonObj_2.getString("body");
+        Log.d("body", body);
 
         // body 로 부터 items 찾기
         JSONObject jsonObj_3 = new JSONObject(body);
         String items = jsonObj_3.getString("items");
         Log.i("ITEMS",items);
+        Log.d("items", items);
 
         // items로 부터 itemlist 를 받기
         JSONObject jsonObj_4 = new JSONObject(items);
@@ -91,50 +101,36 @@ public class WeatherData extends Thread {
             jsonObj_4 = jsonArray.getJSONObject(i);
             String fcstValue = jsonObj_4.getString("fcstValue");
             String category = jsonObj_4.getString("category");
+            String fcstTime = jsonObj_4.getString("fcstTime");
 
-            if(category.equals("SKY")){
-                switch (fcstValue) {
-                    case "1":
-                        weatherState = "맑음";
-                        break;
-                    case "2":
+            if (fcstTime.equals("0700")) {
+                Log.d("category", category);
+                Log.d("fcstValue", fcstValue);
+                if(category.equals("PTY")){
+                    if (Integer.parseInt(fcstValue) > 0) {
                         weatherState = "비";
-                        break;
-                    case "3":
-                        weatherState = "구름많음";
-                        break;
-                    case "4":
-                        weatherState = "흐림";
-                        break;
-                    default:
-                        weatherState = fcstValue;
-                        break;
+                    }
                 }
-            }
 
-            if(category.equals("PTY")){
-                switch (fcstValue) {
-                    case "1":
+                if(category.equals("T3H") || category.equals("T1H")){
+                    weatherTemp = Double.valueOf(fcstValue);
+                }
+
+                if(category.equals("SKY")){
+                    if (fcstValue.equals("1")) {
                         weatherState = "맑음";
-                        break;
-                    case "2":
-                        weatherState = "비";
-                        break;
-                    case "3":
+                    } else if (fcstValue.equals("3")) {
                         weatherState = "구름많음";
-                        break;
-                    case "4":
+                    } else if (fcstValue.equals("4")) {
                         weatherState = "흐림";
-                        break;
-                    default:
+                    } else {
                         weatherState = fcstValue;
-                        break;
+                    }
                 }
-            }
-
-            if(category.equals("T3H") || category.equals("T1H")){
-                weatherTemp = Double.valueOf(fcstValue);
             }
         }
+        Log.d("weatherState", weatherState);
+        Log.d("weatherTemp", weatherTemp.toString());
+        return new String[] {weatherState, weatherTemp.toString()};
     }
 }

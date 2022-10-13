@@ -1,6 +1,7 @@
 package com.ksy.mpl;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,8 +13,8 @@ import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
 
-    private String weatherState = "";
-    private Double weatherTemp = 0.0;
+    private String weatherState;
+    private String weatherTemp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,20 +25,20 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try{
-                    weatherData.lookUpWeather();
+                    String[] dataString = weatherData.lookUpWeather();
+                    weatherState = dataString[0];
+                    weatherTemp = dataString[1];
+                    Log.d("stringArray", dataString[0]);
+                    TextView stateTextview = (TextView) findViewById(R.id.weatherState);
+                    TextView tempTextView = (TextView) findViewById(R.id.temperature);
+
+                    stateTextview.setText(weatherState);
+                    tempTextView.setText(weatherTemp + "도");
                 } catch(IOException| JSONException e) {
                     e.printStackTrace();
                 }
             }
         });
-
-        weatherState = weatherData.getWeatherState();
-        weatherTemp = weatherData.getWeatherTemp();
-        TextView stateTextview = (TextView) findViewById(R.id.weatherState);
-        TextView tempTextView = (TextView) findViewById(R.id.temperature);
-
-        stateTextview.setText(weatherState);
-        tempTextView.setText(weatherTemp + "도");
-    }
+}
 
 }
