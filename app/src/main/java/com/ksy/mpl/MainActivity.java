@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
     ConstraintLayout weatherLayout;
     TextView stateTextview;
     TextView tempTextView;
+    ImageView weatherIcon;
 
     private String weatherState;
     private String weatherTemp;
@@ -30,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         weatherLayout = (ConstraintLayout) findViewById(R.id.weatherLayout);
         stateTextview = (TextView) findViewById(R.id.weatherState);
         tempTextView = (TextView) findViewById(R.id.temperature);
+        weatherIcon = (ImageView) findViewById(R.id.weatherIcon);
 
         new Thread() {
             public void run() {
@@ -79,15 +82,19 @@ public class MainActivity extends AppCompatActivity {
         if (state.equals("맑음")) {
             weatherLayout.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.sunny));
             stateTextview.setText(getApplicationContext().getResources().getString(R.string.sunny));
+            weatherIcon.setImageResource(R.drawable.sunny);
         } else if (state.equals("흐림")) {
             weatherLayout.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.dark));
             stateTextview.setText(getApplicationContext().getResources().getString(R.string.dark));
+            weatherIcon.setImageResource(R.drawable.dark);
         } else if (state.equals("구름많음")) {
             weatherLayout.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.cloudy));
             stateTextview.setText(getApplicationContext().getResources().getString(R.string.cloudy));
+            weatherIcon.setImageResource(R.drawable.cloudy);
         } else {
             weatherLayout.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.rain));
             stateTextview.setText(getApplicationContext().getResources().getString(R.string.rain));
+            weatherIcon.setImageResource(R.drawable.rain);
         }
     }
 }
