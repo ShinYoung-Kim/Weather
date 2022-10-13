@@ -50,7 +50,6 @@ public class WeatherData extends Thread {
          * GET방식으로 전송해서 파라미터 받아오기
          */
         URL url = new URL(urlBuilder.toString());
-        Log.d("Url", url.toString());
 
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
@@ -73,7 +72,6 @@ public class WeatherData extends Thread {
         rd.close();
         conn.disconnect();
         String result= sb.toString();
-        Log.d("error catching", result);
 
         //=======이 밑에 부터는 json에서 데이터 파싱해 오는 부분이다=====//
 
@@ -81,17 +79,13 @@ public class WeatherData extends Thread {
         JSONObject jsonObj_1 = new JSONObject(result);
         String response = jsonObj_1.getString("response");
 
-        Log.d("response", response);
         // response 로 부터 body 찾기
         JSONObject jsonObj_2 = new JSONObject(response);
         String body = jsonObj_2.getString("body");
-        Log.d("body", body);
 
         // body 로 부터 items 찾기
         JSONObject jsonObj_3 = new JSONObject(body);
         String items = jsonObj_3.getString("items");
-        Log.i("ITEMS",items);
-        Log.d("items", items);
 
         // items로 부터 itemlist 를 받기
         JSONObject jsonObj_4 = new JSONObject(items);
@@ -104,9 +98,6 @@ public class WeatherData extends Thread {
             String fcstTime = jsonObj_4.getString("fcstTime");
 
             if (fcstTime.equals("0800")) {
-                Log.d("category", category);
-                Log.d("fcstValue", fcstValue);
-
                 if(category.equals("T3H") || category.equals("T1H")){
                     weatherTemp = Double.valueOf(fcstValue);
                 }
@@ -130,8 +121,6 @@ public class WeatherData extends Thread {
                 }
             }
         }
-        Log.d("weatherState", weatherState);
-        Log.d("weatherTemp", weatherTemp.toString());
 
         return new String[] {weatherState, weatherTemp.toString()};
     }
