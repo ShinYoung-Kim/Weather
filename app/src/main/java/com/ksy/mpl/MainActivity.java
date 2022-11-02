@@ -12,6 +12,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.denzcoskun.imageslider.ImageSlider;
 import com.denzcoskun.imageslider.models.SlideModel;
@@ -38,6 +41,10 @@ public class MainActivity extends AppCompatActivity {
     Animation fabOpen, fabClose, rotateForward, rotateBackward;
 
     boolean isOpen = false;
+
+    private FragmentManager fragmentManager;
+    private AddPhotoFragment addPhotoFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,6 +98,13 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                fragmentManager = getSupportFragmentManager();
+
+                addPhotoFragment = new AddPhotoFragment();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.mainLayout, addPhotoFragment);
+                fragmentTransaction.addToBackStack("addPhoto");
+                fragmentTransaction.commit();
                 animateFab();
             }
         });
@@ -165,5 +179,11 @@ public class MainActivity extends AppCompatActivity {
             fab2.setClickable(true);
             isOpen=true;
         }
+    }
+
+    public void closeFragment(Fragment fragment) {
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.remove(fragment);
+        fragmentTransaction.commit();
     }
 }
