@@ -55,6 +55,10 @@ public class MainActivity extends AppCompatActivity {
         tempTextView = (TextView) findViewById(R.id.temperature);
         weatherIcon = (ImageView) findViewById(R.id.weatherIcon);
 
+        fragmentManager = getSupportFragmentManager();
+
+        addPhotoFragment = new AddPhotoFragment();
+
         new Thread() {
             public void run() {
                 String[] temp = new String[2];
@@ -98,9 +102,6 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fragmentManager = getSupportFragmentManager();
-
-                addPhotoFragment = new AddPhotoFragment();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.mainLayout, addPhotoFragment);
                 fragmentTransaction.addToBackStack("addPhoto");
@@ -139,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
             String msgString = bundle.getString("state");
             changeWeatherStateBackground(weatherState);
             tempTextView.setText(weatherTemp + "도");
+            addPhotoFragment.temperature = weatherTemp;
         }
     };
 
