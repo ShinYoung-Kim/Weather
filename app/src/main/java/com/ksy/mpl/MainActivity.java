@@ -2,6 +2,7 @@ package com.ksy.mpl;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.view.View;
 import android.view.animation.Animation;
@@ -57,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
         fragmentManager = getSupportFragmentManager();
 
-        addPhotoFragment = new AddPhotoFragment();
+        addPhotoFragment = new AddPhotoFragment(getApplicationContext());
 
         new Thread() {
             public void run() {
@@ -102,10 +103,14 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /*
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.mainLayout, addPhotoFragment);
                 fragmentTransaction.addToBackStack("addPhoto");
                 fragmentTransaction.commit();
+
+                 */
+                addPhotoFragment.show(getSupportFragmentManager(), addPhotoFragment.getTag());
                 animateFab();
             }
         });
@@ -134,26 +139,27 @@ public class MainActivity extends AppCompatActivity {
         return dataString;
     }
 
-    Handler handler = new Handler() {
+    Handler handler = new Handler(Looper.getMainLooper()) {
         public void handleMessage(Message msg) {
             Bundle bundle = msg.getData();
             String msgString = bundle.getString("state");
             changeWeatherStateBackground(weatherState);
             tempTextView.setText(weatherTemp + "도");
             addPhotoFragment.temperature = weatherTemp;
+            addPhotoFragment.state = weatherState;
         }
     };
 
     private void changeWeatherStateBackground(String state) {
-        if (state.equals("맑음")) {
+        if ("맑음".equals(state)) {
             weatherLayout.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.sunny));
             stateTextview.setText(getApplicationContext().getResources().getString(R.string.sunny));
             weatherIcon.setImageResource(R.drawable.sunny);
-        } else if (state.equals("흐림")) {
+        } else if ("흐림".equals(state)) {
             weatherLayout.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.dark));
             stateTextview.setText(getApplicationContext().getResources().getString(R.string.dark));
             weatherIcon.setImageResource(R.drawable.dark);
-        } else if (state.equals("구름많음")) {
+        } else if ("구름많음".equals(state)) {
             weatherLayout.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.cloudy));
             stateTextview.setText(getApplicationContext().getResources().getString(R.string.cloudy));
             weatherIcon.setImageResource(R.drawable.cloudy);
