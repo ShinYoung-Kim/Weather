@@ -119,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 animateFab();
                 Toast.makeText(MainActivity.this, "gallery upload", Toast.LENGTH_SHORT).show();
+                addPhotoFragment.show(getSupportFragmentManager(), addPhotoFragment.getTag());
             }
         });
         fab2.setOnClickListener(new View.OnClickListener() {
@@ -126,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 animateFab();
                 Toast.makeText(MainActivity.this, "take a photo", Toast.LENGTH_SHORT).show();
+                addPhotoFragment.show(getSupportFragmentManager(), addPhotoFragment.getTag());
             }
         });
 
