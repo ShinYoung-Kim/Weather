@@ -1,5 +1,6 @@
 package com.ksy.mpl;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -18,9 +19,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.NavigationUI;
 
 import com.denzcoskun.imageslider.ImageSlider;
 import com.denzcoskun.imageslider.models.SlideModel;
@@ -77,8 +75,8 @@ public class MainActivity extends AppCompatActivity {
         NavigationView navigationView = findViewById(R.id.navigationView);
         navigationView.setItemIconTintList(null);
 
-        NavController navController = Navigation.findNavController(this, R.id.navHostFragment);
-        NavigationUI.setupWithNavController(navigationView, navController);
+        //NavController navController = Navigation.findNavController(this, R.id.navHostFragment);
+        //NavigationUI.setupWithNavController(navigationView, navController);
 
         new Thread() {
             public void run() {
@@ -146,7 +144,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 animateFab();
                 Toast.makeText(MainActivity.this, "take a photo", Toast.LENGTH_SHORT).show();
-                addPhotoFragment.show(getSupportFragmentManager(), addPhotoFragment.getTag());
+                Intent intent = new Intent(MainActivity.this, DBCheckActivity.class);
+                startActivity(intent);
             }
         });
 

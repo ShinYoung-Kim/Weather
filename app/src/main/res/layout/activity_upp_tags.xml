@@ -15,10 +15,6 @@
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/photo" />
-
-    <HorizontalScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -26,6 +22,7 @@
             <com.google.android.material.chip.ChipGroup
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:id="@+id/upChipGroup"
                 app:chipSpacingHorizontal="8dp">
             <com.google.android.material.chip.Chip
                 android:checkable="true"
@@ -145,5 +142,4 @@
                     app:layout_constraintTop_toBottomOf="@+id/textView" />
             </com.google.android.material.chip.ChipGroup>
         </LinearLayout>
-    </HorizontalScrollView>
 </LinearLayout>
