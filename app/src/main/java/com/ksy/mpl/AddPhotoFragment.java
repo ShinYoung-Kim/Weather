@@ -20,6 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 public class AddPhotoFragment extends BottomSheetDialogFragment {
@@ -43,7 +44,7 @@ public class AddPhotoFragment extends BottomSheetDialogFragment {
     };
 
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-    private DatabaseReference databaseReference = firebaseDatabase.getReference();
+    private DatabaseReference userDatabase;
 
     public AddPhotoFragment(Context context) {
         this.context = context;
@@ -73,6 +74,11 @@ public class AddPhotoFragment extends BottomSheetDialogFragment {
         setTemperatureText();
         //setStateBackGround(state);
 
+        User userInstance = User.getInstance();
+        String uid = userInstance.getUid();
+
+        userDatabase = firebaseDatabase.getReference("Users").child(uid);
+
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -82,10 +88,9 @@ public class AddPhotoFragment extends BottomSheetDialogFragment {
                 //data.photoURL = url.getText().toString();
                 //data.rate = Integer.parseInt(rate.getText().toString());
                 data.weather = temperatureText.getText().toString();
-                firebaseDatabase.getReference("/data").child(baseDate).push().setValue(data);
+                userDatabase.child("data").child(baseDate).push().setValue(data);
 
                 Fashion fashion = new Fashion();
-
                 fashion.date = baseDate;
 
                 List<Integer> upIds = upChipGroup.getCheckedChipIds();
@@ -119,17 +124,16 @@ public class AddPhotoFragment extends BottomSheetDialogFragment {
                 String rateContent = chip.getText().toString();
                 int intTemperature = Integer.parseInt(temperatureText.getText().toString().substring(0, temperature.length() - 2));
                 if (rateContent.equals("적당함")) {
+                    HashMap<String, Object> statisticHashMap = new HashMap();
                     for (Cloth currentCloth: clothList) {
-                        Statistics statistics = new Statistics();
-                        statistics.temperature = intTemperature;
-                        statistics.cloth = currentCloth;
-                        statistics.wearCount = 1;
+                        Statistics statistics = new Statistics(intTemperature, currentCloth, 1);
                         //wearCount 증가시키는 코드
-                        firebaseDatabase.getReference("/statistics").child(currentCloth.clothName + ", " + intTemperature).push().setValue(statistics);
+                        statisticHashMap.put(currentCloth + ", " + (intTemperature / 5) * 5, statistics);
                     }
+                    userDatabase.child("statistics").updateChildren(statisticHashMap);
                 }
 
-                firebaseDatabase.getReference("/fashion").child(baseDate).push().setValue(fashion);
+                userDatabase.child("fashion").child(baseDate).push().setValue(fashion);
 
                 fragment = getFragmentManager().findFragmentById(R.id.mainLayout);
                 dismiss();
