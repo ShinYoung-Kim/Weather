@@ -43,7 +43,7 @@
                 android:layout_height="300dp"
                 android:layout_margin="10dp"
                 android:scaleType="centerInside"
-                android:src="@drawable/example"
+                android:src="@drawable/ic_launcher_foreground"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/dateText" />
 

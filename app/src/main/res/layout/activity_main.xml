@@ -32,16 +32,18 @@
                 android:src="@drawable/ic_menu"
                 app:tint="@color/white" />
         </LinearLayout>
-
+        <!--
         <fragment
             android:id="@+id/navHostFragment"
             android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:defaultNavHost="true"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/layoutToolBar"
             app:navGraph="@navigation/nav_main" />
+            -->
 
         <include
             android:id="@+id/weatherLayout"
@@ -49,7 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/navHostFragment" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <include
             android:id="@+id/tagLayout"

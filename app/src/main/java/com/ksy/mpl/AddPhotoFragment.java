@@ -1,21 +1,39 @@
 package com.ksy.mpl;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.Manifest;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,6 +46,7 @@ public class AddPhotoFragment extends BottomSheetDialogFragment {
     Button saveBtn;
     TextView dateText;
     TextView temperatureText;
+    ImageView addPhoto;
 
     public String temperature;
     public String state;
@@ -43,8 +62,10 @@ public class AddPhotoFragment extends BottomSheetDialogFragment {
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
 
-    private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+    private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance("https://weather-56623-default-rtdb.firebaseio.com/");
     private DatabaseReference userDatabase;
+    private final StorageReference reference = FirebaseStorage.getInstance().getReference();
+    private Uri imageUri;
 
     public AddPhotoFragment(Context context) {
         this.context = context;
@@ -65,6 +86,8 @@ public class AddPhotoFragment extends BottomSheetDialogFragment {
         outerChipGroup = (ChipGroup) view.findViewById(R.id.outerChipGroup);
         rateChipGroup = (ChipGroup) view.findViewById(R.id.rateChipGroup);
 
+        addPhoto = (ImageView) view.findViewById(R.id.photo);
+
         long now = System.currentTimeMillis();
         Date date = new Date(now);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -74,8 +97,31 @@ public class AddPhotoFragment extends BottomSheetDialogFragment {
         setTemperatureText();
         //setStateBackGround(state);
 
-        User userInstance = User.getInstance();
-        String uid = userInstance.getUid();
+        ActivityResultLauncher<Intent> activityResult = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if( result.getResultCode() == RESULT_OK && result.getData() != null){
+                            imageUri = result.getData().getData();
+                            addPhoto.setImageURI(imageUri);
+                        }
+                    }
+                });
+
+        addPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent galleryIntent = new Intent();
+                galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+                galleryIntent.setType("image/");
+                activityResult.launch(galleryIntent);
+            }
+        });
+
+        String uid = null;
+        User userInstance = User.getInstance(uid);
+        uid = userInstance.getUid();
 
         userDatabase = firebaseDatabase.getReference("Users").child(uid);
 
@@ -83,9 +129,15 @@ public class AddPhotoFragment extends BottomSheetDialogFragment {
             @Override
             public void onClick(View view) {
 
+                if (imageUri != null) {
+                    uploadToFirebase(imageUri);
+                } else {
+                    Toast.makeText(getActivity(), "사진을 선택해주세요.", Toast.LENGTH_SHORT).show();
+                }
+
                 Data data = new Data();
                 data.date = baseDate;
-                //data.photoURL = url.getText().toString();
+                data.photoURL = imageUri.toString();
                 //data.rate = Integer.parseInt(rate.getText().toString());
                 data.weather = temperatureText.getText().toString();
                 userDatabase.child("data").child(baseDate).push().setValue(data);
@@ -122,15 +174,16 @@ public class AddPhotoFragment extends BottomSheetDialogFragment {
 
                 Chip chip = rateChipGroup.findViewById(rateId);
                 String rateContent = chip.getText().toString();
+                fashion.rate = rateContent;
                 int intTemperature = Integer.parseInt(temperatureText.getText().toString().substring(0, temperature.length() - 2));
                 if (rateContent.equals("적당함")) {
                     HashMap<String, Object> statisticHashMap = new HashMap();
                     for (Cloth currentCloth: clothList) {
-                        Statistics statistics = new Statistics(intTemperature, currentCloth, 1);
+                        Statistics statistics = new Statistics((intTemperature / 5) * 5, currentCloth, 1);
                         //wearCount 증가시키는 코드
-                        statisticHashMap.put(currentCloth + ", " + (intTemperature / 5) * 5, statistics);
+                        statisticHashMap.put(currentCloth + ", " + (intTemperature / 5) * 5 + "/wearCount", 1);
                     }
-                    userDatabase.child("statistics").updateChildren(statisticHashMap);
+                    userDatabase.child("Statistics").updateChildren(statisticHashMap);
                 }
 
                 userDatabase.child("fashion").child(baseDate).push().setValue(fashion);
@@ -145,5 +198,43 @@ public class AddPhotoFragment extends BottomSheetDialogFragment {
 
     public void setTemperatureText() {
         temperatureText.setText(temperature + "도");
+    }
+
+    private void uploadToFirebase(Uri uri) {
+        StorageReference fileRef = reference.child(System.currentTimeMillis() + "." + getFileExtension(uri));
+        fileRef.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        //이미지 모델에 담기
+                        UploadModel model = new UploadModel(uri.toString());
+
+                        //키로 아이디 생성
+                        //String modelId = root.push().getKey();
+
+                        //데이터 넣기
+                        //root.child(modelId).setValue(model);
+
+
+                        addPhoto.setImageResource(R.drawable.ic_launcher_foreground);
+                    }
+                });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+    }
+
+    //파일타입 가져오기
+    private String getFileExtension(Uri uri) {
+        ContentResolver cr = getActivity().getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+
+        return mime.getExtensionFromMimeType(cr.getType(uri));
     }
 }

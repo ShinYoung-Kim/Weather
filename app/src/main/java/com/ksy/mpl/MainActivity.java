@@ -1,6 +1,5 @@
 package com.ksy.mpl;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -144,8 +143,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 animateFab();
                 Toast.makeText(MainActivity.this, "take a photo", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(MainActivity.this, DBCheckActivity.class);
-                startActivity(intent);
+                //Intent intent = new Intent(MainActivity.this, DBCheckActivity.class);
+                //startActivity(intent);
             }
         });
 

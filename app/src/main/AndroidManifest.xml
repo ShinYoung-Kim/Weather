@@ -20,6 +20,9 @@
         android:theme="@style/Theme.Weather"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".ImageActivity"
+            android:exported="false" />
+        <activity
             android:name=".SignupActivity"
             android:exported="false" />
         <activity
@@ -32,14 +35,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".DBShowActivity"
-            android:exported="false" />
-        <activity
-            android:name=".DBCheckActivity"
-            android:exported="false" />
-        <activity
             android:name=".MainActivity"
-            android:exported="false"></activity>
+            android:exported="false" />
+
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
     </application>
 
 </manifest>
