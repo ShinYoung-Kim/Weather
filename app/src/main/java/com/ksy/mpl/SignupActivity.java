@@ -98,7 +98,7 @@ public class SignupActivity extends AppCompatActivity {
             Cloth cloth = new Cloth("up", clothString);
             clothHashMap.put(clothString + ", " + "up", cloth);
             for (int temp = 0; temp < 40; temp += 5) {
-                statisticHashMap.put(clothString + ", " + temp, new Statistics(temp, cloth, 0));
+                statisticHashMap.put(clothString + "(up)" + ", " + temp, new Statistics(temp, cloth, 0));
             }
         }
         for (int i = 0; i < downClothes.length - 1; i++) {
@@ -106,7 +106,7 @@ public class SignupActivity extends AppCompatActivity {
             Cloth cloth = new Cloth("down", clothString);
             clothHashMap.put(clothString + ", " + "down", cloth);
             for (int temp = 0; temp < 40; temp += 5) {
-                statisticHashMap.put(clothString + ", " + temp, new Statistics(temp, cloth, 0));
+                statisticHashMap.put(clothString + "(down)" + ", " + temp, new Statistics(temp, cloth, 0));
             }
         }
         for (int i = 0; i < outerClothes.length - 1; i++) {
@@ -114,7 +114,7 @@ public class SignupActivity extends AppCompatActivity {
             Cloth cloth = new Cloth("outer", clothString);
             clothHashMap.put(clothString + ", " + "outer", cloth);
             for (int temp = 0; temp < 40; temp += 5) {
-                statisticHashMap.put(clothString + ", " + temp, new Statistics(temp, cloth, 0));
+                statisticHashMap.put(clothString + "(outer)" + ", " + temp, new Statistics(temp, cloth, 0));
             }
         }
         for (int i = 0; i < AccessaryClothes.length - 1; i++) {
@@ -122,7 +122,7 @@ public class SignupActivity extends AppCompatActivity {
             Cloth cloth = new Cloth("acc", clothString);
             clothHashMap.put(clothString + ", " + "acc", cloth);
             for (int temp = 0; temp < 40; temp += 5) {
-                statisticHashMap.put(clothString + ", " + temp, new Statistics(temp, cloth, 0));
+                statisticHashMap.put(clothString + "(acc)" + ", " + temp, new Statistics(temp, cloth, 0));
             }
         }
 

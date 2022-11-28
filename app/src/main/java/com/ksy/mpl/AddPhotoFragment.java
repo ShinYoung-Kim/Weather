@@ -31,6 +31,7 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -40,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AddPhotoFragment extends BottomSheetDialogFragment {
 
@@ -178,13 +180,17 @@ public class AddPhotoFragment extends BottomSheetDialogFragment {
                 fashion.rate = rateContent;
                 int intTemperature = Integer.parseInt(temperatureText.getText().toString().substring(0, temperature.length() - 2));
                 if (rateContent.equals("적당함")) {
-                    HashMap<String, Object> statisticHashMap = new HashMap();
+                    //HashMap<String, Object> statisticHashMap = new HashMap();
                     for (Cloth currentCloth: clothList) {
-                        Statistics statistics = new Statistics((intTemperature / 5) * 5, currentCloth, 1);
+                        //Statistics statistics = new Statistics((intTemperature / 5) * 5, currentCloth, 1);
+                        Map<String, Object> updates = new HashMap<>();
+                        updates.put("Statistics/" + currentCloth + ", " + (intTemperature / 5) * 5 + "/wearCount", ServerValue.increment(1));
+                        userDatabase.updateChildren(updates);
                         //wearCount 증가시키는 코드
-                        statisticHashMap.put(currentCloth + ", " + (intTemperature / 5) * 5 + "/wearCount", 1);
+                        //int countType = userDatabase.child("Statistics").child(currentCloth + ", " + (intTemperature / 5) * 5 + "/wearCount").getValue();
+                        //statisticHashMap.put(currentCloth + ", " + (intTemperature / 5) * 5 + "/wearCount", 1);
                     }
-                    userDatabase.child("Statistics").updateChildren(statisticHashMap);
+                    //userDatabase.child("Statistics").updateChildren(statisticHashMap);
                 }
 
                 userDatabase.child("fashion").child(baseDate).push().setValue(fashion);
