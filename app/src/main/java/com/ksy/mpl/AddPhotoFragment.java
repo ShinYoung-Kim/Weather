@@ -184,7 +184,7 @@ public class AddPhotoFragment extends BottomSheetDialogFragment {
                     for (Cloth currentCloth: clothList) {
                         //Statistics statistics = new Statistics((intTemperature / 5) * 5, currentCloth, 1);
                         Map<String, Object> updates = new HashMap<>();
-                        updates.put("Statistics/" + currentCloth + ", " + (intTemperature / 5) * 5 + "/wearCount", ServerValue.increment(1));
+                        updates.put("Statistics/" + currentCloth.clothName +"(" + currentCloth.category + ")" + ", " + (intTemperature / 5) * 5 + "/wearCount", ServerValue.increment(1));
                         userDatabase.updateChildren(updates);
                         //wearCount 증가시키는 코드
                         //int countType = userDatabase.child("Statistics").child(currentCloth + ", " + (intTemperature / 5) * 5 + "/wearCount").getValue();
