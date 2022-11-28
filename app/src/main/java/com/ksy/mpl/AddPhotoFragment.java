@@ -144,6 +144,7 @@ public class AddPhotoFragment extends BottomSheetDialogFragment {
 
                 Fashion fashion = new Fashion();
                 fashion.date = baseDate;
+                fashion.photoURL = imageUri.toString();
 
                 List<Integer> upIds = upChipGroup.getCheckedChipIds();
                 List<Integer> downIds = downChipGroup.getCheckedChipIds();
