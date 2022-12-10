@@ -35,7 +35,9 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:exported="false" />
+            android:exported="false" >
+
+        </activity>
 
         <uses-library
             android:name="org.apache.http.legacy"

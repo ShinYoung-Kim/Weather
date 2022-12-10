@@ -94,7 +94,7 @@ public class SignupActivity extends AppCompatActivity {
         String[] AccessaryClothes = {"없음", "귀걸이", "목걸이", "팔찌", "목도리", "장갑", "선글라스", "모자"};
         HashMap<String, Statistics> statisticHashMap = new HashMap();
 
-        for (int i = 0; i < upClothes.length - 1; i++) {
+        for (int i = 0; i < upClothes.length; i++) {
             String clothString = upClothes[i];
             Cloth cloth = new Cloth("up", clothString);
             clothHashMap.put(clothString + ", " + "up", cloth);
@@ -103,7 +103,7 @@ public class SignupActivity extends AppCompatActivity {
                 databaseReference.child("Statistics").child(String.valueOf(temp)).child("up").child(clothString).setValue(new Statistics(clothString, 0));
             }
         }
-        for (int i = 0; i < downClothes.length - 1; i++) {
+        for (int i = 0; i < downClothes.length; i++) {
             String clothString = downClothes[i];
             Cloth cloth = new Cloth("down", clothString);
             clothHashMap.put(clothString + ", " + "down", cloth);
@@ -111,7 +111,7 @@ public class SignupActivity extends AppCompatActivity {
                 databaseReference.child("Statistics").child(String.valueOf(temp)).child("down").child(clothString).setValue(new Statistics(clothString, 0));
             }
         }
-        for (int i = 0; i < outerClothes.length - 1; i++) {
+        for (int i = 0; i < outerClothes.length; i++) {
             String clothString = outerClothes[i];
             Cloth cloth = new Cloth("outer", clothString);
             clothHashMap.put(clothString + ", " + "outer", cloth);
@@ -119,7 +119,7 @@ public class SignupActivity extends AppCompatActivity {
                 databaseReference.child("Statistics").child(String.valueOf(temp)).child("outer").child(clothString).setValue(new Statistics(clothString, 0));
             }
         }
-        for (int i = 0; i < AccessaryClothes.length - 1; i++) {
+        for (int i = 0; i < AccessaryClothes.length; i++) {
             String clothString = AccessaryClothes[i];
             Cloth cloth = new Cloth("acc", clothString);
             clothHashMap.put(clothString + ", " + "acc", cloth);

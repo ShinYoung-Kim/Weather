@@ -127,6 +127,7 @@ public class AddPhotoFragment extends BottomSheetDialogFragment {
         uid = userInstance.getUid();
 
         userDatabase = firebaseDatabase.getReference("Users").child(uid);
+        //userDatabase = firebaseDatabase.getReference("Users").child("OVUC3LwGHlNvMFbVsFz0fVHhheu1");
 
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override

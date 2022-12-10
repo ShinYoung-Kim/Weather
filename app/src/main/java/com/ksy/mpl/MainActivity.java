@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -23,8 +24,14 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.denzcoskun.imageslider.ImageSlider;
 import com.denzcoskun.imageslider.models.SlideModel;
+import com.google.android.material.chip.Chip;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONException;
 
@@ -51,6 +58,11 @@ public class MainActivity extends AppCompatActivity {
     private FragmentManager fragmentManager;
     private AddPhotoFragment addPhotoFragment;
 
+    private Chip tagOuter, tagTop, tagBottom, tagAcc;
+
+    private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+    private DatabaseReference userDatabase;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +72,11 @@ public class MainActivity extends AppCompatActivity {
         stateTextview = (TextView) findViewById(R.id.weatherState);
         tempTextView = (TextView) findViewById(R.id.temperature);
         weatherIcon = (ImageView) findViewById(R.id.weatherIcon);
+
+        tagOuter = (Chip) findViewById(R.id.tagOuter);
+        tagTop = (Chip) findViewById(R.id.tagTop);
+        tagBottom = (Chip) findViewById(R.id.tagBottom);
+        tagAcc = (Chip) findViewById(R.id.tagAcc);
 
         fragmentManager = getSupportFragmentManager();
 
@@ -139,6 +156,8 @@ public class MainActivity extends AppCompatActivity {
             Bundle bundle = msg.getData();
             String msgString = bundle.getString("state");
             changeWeatherStateBackground(weatherState);
+            float temp = Float.parseFloat(weatherTemp);
+            changeTags(temp);
             tempTextView.setText(weatherTemp + "도");
             addPhotoFragment.temperature = weatherTemp;
             addPhotoFragment.state = weatherState;
@@ -180,5 +199,57 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.remove(fragment);
         fragmentTransaction.commit();
+    }
+
+    private void changeTags(float temperature) {
+        String uid = null;
+        User userInstance = User.getInstance(uid);
+        uid = userInstance.getUid();
+
+        int temp = (int) ((int) (temperature / 5) * 5);
+
+        //userDatabase = firebaseDatabase.getReference("Users").child("OVUC3LwGHlNvMFbVsFz0fVHhheu1");
+        userDatabase = firebaseDatabase.getReference("Users").child(uid);
+        DatabaseReference statistics = userDatabase.child("Statistics").child(String.valueOf(temp));
+        DatabaseReference outers = statistics.child("outer");
+        DatabaseReference ups = statistics.child("up");
+        DatabaseReference downs = statistics.child("down");
+        DatabaseReference accs = statistics.child("acc");
+
+        String[] downClothes = {"없음", "반바지", "청바지", "면바지", "슬랙스", "조거팬츠", "스키니진", "레깅스", "스타킹", "운동복", "유니폼", "정장", "미니스커트", "스커트"};
+        String[] outerClothes = {"없음", "자켓", "야상", "코트", "가죽자켓", "패딩", "플리스", "후드집업", "우비", "무스탕", "조끼"};
+        String[] accessaryClothes = {"없음", "귀걸이", "목걸이", "팔찌", "목도리", "장갑", "선글라스", "모자"};
+        String[] upClothes = {"없음", "민소매", "반팔", "원피스", "셔츠", "긴팔", "가디건", "후드티", "맨투맨", "운동복", "유니폼", "정장", "니트"};
+
+        changeTag(ups, upClothes, tagTop);
+        changeTag(downs, downClothes, tagBottom);
+        changeTag(outers, outerClothes, tagOuter);
+        changeTag(accs, accessaryClothes, tagAcc);
+    }
+
+    private void changeTag(DatabaseReference statisticsByCategory, String[] clothes, Chip tag) {
+        statisticsByCategory.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                int count = 0;
+                String string = "";
+                for (int i = 0; i < clothes.length; i++) {
+                    int currentCount = dataSnapshot.child(clothes[i]).child("wearCount").getValue(Integer.class);
+
+                    if (currentCount > count) {
+                        count = currentCount;
+                        string = clothes[i];
+                    }
+                    tag.setText(string);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.d("failed change tags", "Failed to read value.", error.toException());
+            }
+        });
     }
 }
