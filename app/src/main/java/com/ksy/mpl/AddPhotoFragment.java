@@ -123,8 +123,10 @@ public class AddPhotoFragment extends BottomSheetDialogFragment {
         });
 
         String uid = null;
-        User userInstance = User.getInstance(uid);
+        String id = null;
+        User userInstance = User.getInstance(uid, id);
         uid = userInstance.getUid();
+        id = userInstance.getId();
 
         userDatabase = firebaseDatabase.getReference("Users").child(uid);
         //userDatabase = firebaseDatabase.getReference("Users").child("OVUC3LwGHlNvMFbVsFz0fVHhheu1");

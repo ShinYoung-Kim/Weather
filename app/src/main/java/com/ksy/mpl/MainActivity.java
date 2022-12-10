@@ -63,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference userDatabase;
 
+    private TextView userName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,6 +97,16 @@ public class MainActivity extends AppCompatActivity {
 
         NavController navController = Navigation.findNavController(this, R.id.navHostFragment);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        userName = (TextView) navigationView.findViewById(R.id.userName);
+
+        String uid = null;
+        String id = null;
+        User userInstance = User.getInstance(uid, id);
+        uid = userInstance.getUid();
+        id = userInstance.getId();
+
+        userName.setText(id);
 
         new Thread() {
             public void run() {
@@ -203,8 +215,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void changeTags(float temperature) {
         String uid = null;
-        User userInstance = User.getInstance(uid);
+        String id = null;
+        User userInstance = User.getInstance(uid, id);
         uid = userInstance.getUid();
+        id = userInstance.getId();
 
         int temp = (int) ((int) (temperature / 5) * 5);
 

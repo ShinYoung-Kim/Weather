@@ -15,6 +15,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -54,7 +55,9 @@ public class SignupActivity extends AppCompatActivity {
                                 FirebaseUser user = firebaseAuth.getCurrentUser();
                                 String email = user.getEmail();
                                 String uid = user.getUid();
-                                String name = id;
+                                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(id).build();
+                                user.updateProfile(profileUpdates);
+                                String name = user.getDisplayName();
 
                                 HashMap<Object, String> hashMap = new HashMap<>();
 
@@ -65,7 +68,7 @@ public class SignupActivity extends AppCompatActivity {
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                                 DatabaseReference reference = database.getReference("Users");
                                 reference.child(uid).child("userInfo").setValue(hashMap);
-                                User userInstance = User.getInstance(uid);
+                                User userInstance = User.getInstance(uid, name);
 
                                 initDatabase(reference.child(uid));
 
