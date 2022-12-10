@@ -142,15 +142,6 @@
                     android:id="@+id/downMiniSkirt"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView" />
-                <com.google.android.material.chip.Chip
-                    style="@style/Widget.MaterialComponents.Chip.Entry"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:text="하의추가"
-                    android:id="@+id/downAdd"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView" />
             </com.google.android.material.chip.ChipGroup>
         </LinearLayout>
 </LinearLayout>
