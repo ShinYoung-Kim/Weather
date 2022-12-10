@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".AddPhotoFragment"
-    android:background="#210479">
+    android:background="@color/colorPrimary">
 
     <!-- TODO: Update blank fragment layout -->
     <ScrollView
@@ -14,12 +14,13 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <TextView
                 android:id="@+id/dateText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:layout_marginStart="10dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="10dp"
                 android:text="2022-10-31"
                 android:textSize="40sp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -29,21 +30,22 @@
                 android:id="@+id/temperatureText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:gravity="right"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginRight="30dp"
                 android:text="8도"
                 android:textSize="40sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/dateText"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/photo"
-                android:layout_width="wrap_content"
-                android:layout_height="300dp"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
                 android:layout_margin="10dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_launcher_foreground"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_add_a_photo_black_24dp"
+                android:alpha="0.7"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/dateText" />
 
@@ -86,10 +88,14 @@
                 app:layout_constraintTop_toBottomOf="@+id/accTags" />
 
             <Button
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="저장하기"
+                android:text="업로드"
+                android:textSize="20sp"
+                android:textColor="@color/black"
                 android:id="@+id/saveBtn"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:layout_margin="10dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/weatherTags" />
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -64,7 +64,7 @@ public class AddPhotoFragment extends BottomSheetDialogFragment {
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
 
-    private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance("https://weather-56623-default-rtdb.firebaseio.com/");
+    private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference userDatabase;
     private final StorageReference reference = FirebaseStorage.getInstance().getReference();
     private Uri imageUri;
@@ -236,8 +236,7 @@ public class AddPhotoFragment extends BottomSheetDialogFragment {
                         //데이터 넣기
                         //root.child(modelId).setValue(model);
 
-
-                        addPhoto.setImageResource(R.drawable.ic_launcher_foreground);
+                        //addPhoto.setImageResource(R.drawable.ic_add_a_photo_black_24dp);
                     }
                 });
             }
