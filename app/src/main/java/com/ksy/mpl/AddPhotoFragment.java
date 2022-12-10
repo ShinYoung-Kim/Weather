@@ -148,11 +148,6 @@ public class AddPhotoFragment extends BottomSheetDialogFragment {
                 data.weather = temperatureText.getText().toString();
                 userDatabase.child("data").child(baseDate).push().setValue(data);
 
-                Fashion fashion = new Fashion();
-                fashion.date = baseDate;
-                fashion.photoURL = imageUri.toString();
-                fashion.weather = temperatureText.getText().toString();
-
                 List<Integer> upIds = upChipGroup.getCheckedChipIds();
                 List<Integer> downIds = downChipGroup.getCheckedChipIds();
                 List<Integer> outerIds = outerChipGroup.getCheckedChipIds();
@@ -185,11 +180,10 @@ public class AddPhotoFragment extends BottomSheetDialogFragment {
                     clothList.add(cloth);
                 }
 
-                fashion.clothList = clothList;
-
                 Chip chip = rateChipGroup.findViewById(rateId);
                 String rateContent = chip.getText().toString();
-                fashion.rate = rateContent;
+
+                Fashion fashion = new Fashion(baseDate, clothList, temperatureText.getText().toString(), rateContent, imageUri.toString());
 
                 int intTemperature = Integer.parseInt(temperatureText.getText().toString().substring(0, temperature.length() - 2));
                 if (rateContent.equals("적당함")) {
@@ -207,7 +201,7 @@ public class AddPhotoFragment extends BottomSheetDialogFragment {
                     //userDatabase.child("Statistics").updateChildren(statisticHashMap);
                 }
 
-                userDatabase.child("fashion").child("date").child(baseDate).push().setValue(fashion);
+                userDatabase.child("fashion").child("date").child(baseDate).setValue(fashion);
                 userDatabase.child("fashion").child("temperature").child(String.valueOf((intTemperature / 5) * 5)).push().setValue(fashion);
 
                 fragment = getFragmentManager().findFragmentById(R.id.mainLayout);
