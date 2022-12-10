@@ -56,7 +56,7 @@ public class AddPhotoFragment extends BottomSheetDialogFragment {
     Fragment fragment;
     Context context;
 
-    ChipGroup upChipGroup, downChipGroup, outerChipGroup, rateChipGroup;
+    ChipGroup upChipGroup, downChipGroup, outerChipGroup, accChipGroup, rateChipGroup;
 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
@@ -86,6 +86,7 @@ public class AddPhotoFragment extends BottomSheetDialogFragment {
         upChipGroup = (ChipGroup) view.findViewById(R.id.upChipGroup);
         downChipGroup = (ChipGroup) view.findViewById(R.id.downChipGroup);
         outerChipGroup = (ChipGroup) view.findViewById(R.id.outerChipGroup);
+        accChipGroup = (ChipGroup) view.findViewById(R.id.accChipGroup);
         rateChipGroup = (ChipGroup) view.findViewById(R.id.rateChipGroup);
 
         addPhoto = (ImageView) view.findViewById(R.id.photo);
@@ -147,10 +148,12 @@ public class AddPhotoFragment extends BottomSheetDialogFragment {
                 Fashion fashion = new Fashion();
                 fashion.date = baseDate;
                 fashion.photoURL = imageUri.toString();
+                fashion.weather = temperatureText.getText().toString();
 
                 List<Integer> upIds = upChipGroup.getCheckedChipIds();
                 List<Integer> downIds = downChipGroup.getCheckedChipIds();
                 List<Integer> outerIds = outerChipGroup.getCheckedChipIds();
+                List<Integer> accIds = accChipGroup.getCheckedChipIds();
                 int rateId = rateChipGroup.getCheckedChipId();
 
                 List<Cloth> clothList = new ArrayList<>();
@@ -173,18 +176,26 @@ public class AddPhotoFragment extends BottomSheetDialogFragment {
                     clothList.add(cloth);
                 }
 
+                for (Integer id : accIds) {
+                    Chip chip = accChipGroup.findViewById(id);
+                    Cloth cloth = new Cloth("acc", chip.getText().toString());
+                    clothList.add(cloth);
+                }
+
                 fashion.clothList = clothList;
 
                 Chip chip = rateChipGroup.findViewById(rateId);
                 String rateContent = chip.getText().toString();
                 fashion.rate = rateContent;
+
                 int intTemperature = Integer.parseInt(temperatureText.getText().toString().substring(0, temperature.length() - 2));
                 if (rateContent.equals("적당함")) {
                     //HashMap<String, Object> statisticHashMap = new HashMap();
                     for (Cloth currentCloth: clothList) {
                         //Statistics statistics = new Statistics((intTemperature / 5) * 5, currentCloth, 1);
                         Map<String, Object> updates = new HashMap<>();
-                        updates.put("Statistics/" + currentCloth.clothName +"(" + currentCloth.category + ")" + ", " + (intTemperature / 5) * 5 + "/wearCount", ServerValue.increment(1));
+                        //updates.put("Statistics/" + currentCloth.clothName +"(" + currentCloth.category + ")" + ", " + (intTemperature / 5) * 5 + "/wearCount", ServerValue.increment(1));
+                        updates.put("Statistics/" + (intTemperature / 5) * 5 + "/" + currentCloth.category + "/" + currentCloth.clothName + "/wearCount", ServerValue.increment(1));
                         userDatabase.updateChildren(updates);
                         //wearCount 증가시키는 코드
                         //int countType = userDatabase.child("Statistics").child(currentCloth + ", " + (intTemperature / 5) * 5 + "/wearCount").getValue();
@@ -193,7 +204,8 @@ public class AddPhotoFragment extends BottomSheetDialogFragment {
                     //userDatabase.child("Statistics").updateChildren(statisticHashMap);
                 }
 
-                userDatabase.child("fashion").child(baseDate).push().setValue(fashion);
+                userDatabase.child("fashion").child("date").child(baseDate).push().setValue(fashion);
+                userDatabase.child("fashion").child("temperature").child(String.valueOf((intTemperature / 5) * 5)).push().setValue(fashion);
 
                 fragment = getFragmentManager().findFragmentById(R.id.mainLayout);
                 dismiss();

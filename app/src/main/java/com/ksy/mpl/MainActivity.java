@@ -9,7 +9,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -18,6 +17,9 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.NavigationUI;
 
 import com.denzcoskun.imageslider.ImageSlider;
 import com.denzcoskun.imageslider.models.SlideModel;
@@ -74,8 +76,8 @@ public class MainActivity extends AppCompatActivity {
         NavigationView navigationView = findViewById(R.id.navigationView);
         navigationView.setItemIconTintList(null);
 
-        //NavController navController = Navigation.findNavController(this, R.id.navHostFragment);
-        //NavigationUI.setupWithNavController(navigationView, navController);
+        NavController navController = Navigation.findNavController(this, R.id.navHostFragment);
+        NavigationUI.setupWithNavController(navigationView, navController);
 
         new Thread() {
             public void run() {
@@ -108,8 +110,6 @@ public class MainActivity extends AppCompatActivity {
         imageSlider.setImageList(slideModels, true);
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab1 = (FloatingActionButton) findViewById(R.id.fab1);
-        fab2 = (FloatingActionButton) findViewById(R.id.fab2);
 
         fabOpen = AnimationUtils.loadAnimation(this, R.anim.fab_open);
         fabClose = AnimationUtils.loadAnimation(this, R.anim.fab_close);
@@ -120,34 +120,10 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.mainLayout, addPhotoFragment);
-                fragmentTransaction.addToBackStack("addPhoto");
-                fragmentTransaction.commit();
-                 */
                 addPhotoFragment.show(getSupportFragmentManager(), addPhotoFragment.getTag());
                 animateFab();
             }
         });
-        fab1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                animateFab();
-                Toast.makeText(MainActivity.this, "gallery upload", Toast.LENGTH_SHORT).show();
-                addPhotoFragment.show(getSupportFragmentManager(), addPhotoFragment.getTag());
-            }
-        });
-        fab2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                animateFab();
-                Toast.makeText(MainActivity.this, "take a photo", Toast.LENGTH_SHORT).show();
-                //Intent intent = new Intent(MainActivity.this, DBCheckActivity.class);
-                //startActivity(intent);
-            }
-        });
-
     }
 
     private String[] getWeatherData(WeatherData weatherData) throws JSONException, IOException {
@@ -192,18 +168,10 @@ public class MainActivity extends AppCompatActivity {
     private void animateFab() {
         if(isOpen) {
             fab.startAnimation(rotateForward);
-            fab1.startAnimation(fabClose);
-            fab2.startAnimation(fabClose);
-            fab1.setClickable(false);
-            fab2.setClickable(false);
             isOpen=false;
         }
         else {
             fab.startAnimation(rotateBackward);
-            fab1.startAnimation(fabOpen);
-            fab2.startAnimation(fabOpen);
-            fab1.setClickable(true);
-            fab2.setClickable(true);
             isOpen=true;
         }
     }

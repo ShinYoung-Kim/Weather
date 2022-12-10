@@ -69,6 +69,13 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/downTags" />
+            <include
+                android:id="@+id/accTags"
+                layout="@layout/activity_acc_tags"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/outerTags" />
 
             <include
                 android:id="@+id/weatherTags"
@@ -76,7 +83,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/outerTags" />
+                app:layout_constraintTop_toBottomOf="@+id/accTags" />
 
             <Button
                 android:layout_width="wrap_content"
