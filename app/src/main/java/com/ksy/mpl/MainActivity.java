@@ -98,7 +98,9 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.navHostFragment);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        userName = (TextView) navigationView.findViewById(R.id.userName);
+        View navHeaderView= navigationView.inflateHeaderView(R.layout.navigation_header);
+
+        userName = (TextView) navHeaderView.findViewById(R.id.userName);
 
         String uid = null;
         String id = null;
