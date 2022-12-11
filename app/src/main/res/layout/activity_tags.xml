@@ -19,7 +19,7 @@
         android:id="@+id/tagOuter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="가디건"
+        android:text="패딩"
         android:layout_margin="10dp"
         app:layout_constraintStart_toStartOf="@id/closetNow"
         app:layout_constraintTop_toBottomOf="@id/closetNow" />
@@ -28,7 +28,7 @@
         android:id="@+id/tagTop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="블라우스"
+        android:text="후드티"
         android:layout_margin="10dp"
         app:layout_constraintStart_toEndOf="@id/tagOuter"
         app:layout_constraintTop_toBottomOf="@id/closetNow" />
@@ -37,7 +37,7 @@
         android:id="@+id/tagBottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="슬랙스"
+        android:text="청바지"
         android:layout_margin="10dp"
         app:layout_constraintStart_toEndOf="@id/tagTop"
         app:layout_constraintTop_toBottomOf="@id/closetNow" />
@@ -46,7 +46,7 @@
         android:id="@+id/tagAcc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="로퍼"
+        android:text="목도리"
         android:layout_margin="10dp"
         app:layout_constraintStart_toEndOf="@id/tagBottom"
         app:layout_constraintTop_toBottomOf="@id/closetNow" />

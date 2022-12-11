@@ -230,30 +230,14 @@ public class HomeFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 int count = 0;
                 String string = "";
-                boolean isChanged = false;
                 for (int i = 0; i < clothes.length; i++) {
                     int currentCount = dataSnapshot.child(clothes[i]).child("wearCount").getValue(Integer.class);
 
                     if (currentCount > count) {
                         count = currentCount;
                         string = clothes[i];
-                        isChanged = true;
                     }
                     tag.setText(string);
-                }
-
-                if (!isChanged) {
-                    int clothesLength = clothes.length - 1;
-                    if (clothes[clothesLength].equals("니트")) {
-                        tag.setText("후드티");
-                    } else if (clothes[clothesLength].equals("스커트")) {
-                        tag.setText("청바지");
-                    } else if (clothes[clothesLength].equals("조끼")) {
-                        tag.setText("패딩");
-                    } else if (clothes[clothesLength].equals("모자")) {
-                        tag.setText("목도리");
-                    }
-
                 }
             }
 

@@ -15,6 +15,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -63,15 +64,15 @@ public class CalendarFragment extends Fragment {
 
         userDatabase = firebaseDatabase.getReference("Users").child(uid);
 
-        DatabaseReference beforeFashion = userDatabase.child("fashion").child("date").child("2022-12-09");
-        DatabaseReference afterFashion = userDatabase.child("fashion").child("date").child("2022-12-11");
+        DatabaseReference beforeFashion = userDatabase.child("fashion").child("date").child("2022-12-10");
+        DatabaseReference afterFashion = userDatabase.child("fashion").child("date").child("2022-12-12");
 
         List<Cloth> clothList = new ArrayList<>();
-        beforeFashion.setValue(new Fashion("2022-12-09", clothList, "0", "추움", "https://cdn.pixabay.com/photo/2022/12/01/14/46/city-7629244_1280.jpg"));
-        afterFashion.setValue(new Fashion("2022-12-11", clothList, "0", "적당함", "https://cdn.pixabay.com/photo/2022/12/01/14/46/city-7629244_1280.jpg"));
+
+        beforeFashion.setValue(new Fashion("2022-12-10", clothList, "0", "추움", "https://cdn.pixabay.com/photo/2022/12/01/14/46/city-7629244_1280.jpg"));
+        afterFashion.setValue(new Fashion("2022-12-12", clothList, "0", "적당함", "https://cdn.pixabay.com/photo/2022/12/01/14/46/city-7629244_1280.jpg"));
 
         //userDatabase = firebaseDatabase.getReference("Users").child("OVUC3LwGHlNvMFbVsFz0fVHhheu1");
-
 
         Calendar startDate = Calendar.getInstance();
         startDate.add(Calendar.MONTH, -1);
@@ -120,18 +121,24 @@ public class CalendarFragment extends Fragment {
                     Fashion fashion = dataSnapshot.getValue(Fashion.class);
 
                     Log.e("TAG", "CURRENT DATE IS " + fashion.toString());
-                    if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
-                    {
-                        // Save your data in here
-                        calendarImage.setImageURI(Uri.parse(fashion.photoURL));
+                    if (fashion.photoURL.startsWith("http")) {
+                        Glide.with(getActivity())
+                                .load(fashion.photoURL)
+                                .into(calendarImage);
+                    } else {
+                        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+                        {
+                            // Save your data in here
+                            calendarImage.setImageURI(Uri.parse(fashion.photoURL));
+                        }
+                        else
+                        {
+                            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+                        }
+                        weatherTextView.setText(fashion.weather);
+                        rateTextView.setText(fashion.rate);
                     }
-                    else
-                    {
-                        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
 
-                    }
-                    weatherTextView.setText(fashion.weather);
-                    rateTextView.setText(fashion.rate);
                 } else {
                     calendarImage.setImageResource(R.drawable.ic_add_a_photo_black_24dp);
                     weatherTextView.setText("입력된 패션 정보가 없습니다.");
